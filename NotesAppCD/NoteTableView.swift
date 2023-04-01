@@ -10,10 +10,23 @@ import CoreData
 
 var noteList = [Note] ()
 
-class NoteTableView: UITableViewController
+
+
+
+class ResultsVC: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .gray
+    }
+}
+
+
+class NoteTableView: UITableViewController, UISearchResultsUpdating
 {
+    let searchController = UISearchController(searchResultsController: ResultsVC())
+    
     var firstLoad = true
-        
+   
         
     func nonDeletedNotes() -> [Note]
     {
@@ -31,6 +44,7 @@ class NoteTableView: UITableViewController
         
         override func viewDidLoad()
         {
+            
             if(firstLoad)
             {
                 firstLoad = false
@@ -50,10 +64,51 @@ class NoteTableView: UITableViewController
                     print("Fetch Failed")
                 }
             }
+            title = "Search"
+          
+            
+            searchController.searchResultsUpdater = self
+            navigationItem.searchController = searchController
+         
         }
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else {
+            return
+        }
+        let vc = searchController.searchResultsController as? ResultsVC
+        vc?.view.backgroundColor = .systemOrange
+        print(text)
         
         
+        
+        
+    }
+  
+   
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
+            
+            let noteToDelete = nonDeletedNotes()[indexPath.row]
+            
+            
+            noteToDelete.deletedDate = Date()
+            
+            do {
+                
+              
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                try context.save()
+            } catch {
+                print("ERROR DELETE")
+            }
+           
+        }
+        tableView.reloadData()
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -63,13 +118,13 @@ class NoteTableView: UITableViewController
         thisNote = nonDeletedNotes()[indexPath.row]
         noteCell.titleLabel.text = thisNote.title
         noteCell.descLabel.text = thisNote.desc
-    //    noteCell.savedImage.image = thisNote.
+    
         
-//#warning("burada data olan veriyi imageye çevirmemiz gerek o da bu şekilde yapıulıyor. Ama öncesiinde crash yememesi için optionallıktan kaldırıyoruz böyle bir veri varsa yapalımm diye ")
+
         if let currentImage = thisNote.image {
 
             
-           // #warning("burada ?? diyip yine crash yememesi için eğer data varsa göster yoksa boş data ver diyoruz")
+    
             let image = UIImage(data: thisNote.image ?? Data())
             noteCell.savedImage.image = image
         }
@@ -108,6 +163,12 @@ class NoteTableView: UITableViewController
                 tableView.deselectRow(at: indexPath, animated: true)
             }
         }
+    
+    
+    
+  
+    
+    
         
         
 }

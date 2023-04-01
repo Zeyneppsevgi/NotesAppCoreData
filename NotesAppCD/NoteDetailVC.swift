@@ -11,7 +11,7 @@ import CoreData
 class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     
     
-
+    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var aciklamaTextView: UITextView!
     @IBOutlet weak var titleTextField: UITextField!
@@ -19,18 +19,22 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     var selectedNote: Note? = nil
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         if(selectedNote != nil)
-                {
-                    titleTextField.text = selectedNote?.title
-                    aciklamaTextView.text = selectedNote?.desc
-                }
+        {
+            titleTextField.text = selectedNote?.title
+            aciklamaTextView.text = selectedNote?.desc
+        }
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(klavyeyiKapat))
         view.addGestureRecognizer(gestureRecognizer)
         
         imageView.isUserInteractionEnabled = true
         let imageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(gorselSec))
         imageView.addGestureRecognizer(imageGestureRecognizer)
+        
+    
+       
     }
     
     @objc func gorselSec() {
@@ -52,8 +56,8 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     }
     
     
-
-            
+    
+    
     @IBAction func saveAction(_ sender: Any) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext
@@ -64,15 +68,15 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
             newNote.id = noteList.count as NSNumber
             newNote.title = titleTextField.text
             newNote.desc = aciklamaTextView.text
-
+            
             
             print(imageView.image)
             
-
-            #warning("kaydetme şeklimiz  data oldugu icin önce imageyi dataya çeviriyoruz")
+            
+#warning("kaydetme şeklimiz  data oldugu icin önce imageyi dataya çeviriyoruz")
             
             if let image = imageView.image {
-
+                
                 if let imageData = image.jpegData(compressionQuality: 1.0) {
 #warning("burada çeviriyoruz dataya")
                     newNote.image = imageData
@@ -81,8 +85,8 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
             }
             
             
-         
-       
+            
+            
             do
             {
                 try context.save()
@@ -121,28 +125,36 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     
     
     
-    @IBAction func deleteNote(_ sender: Any) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext
-                
-                let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
-                do {
-                    let results:NSArray = try context.fetch(request) as NSArray
-                    for result in results
-                    {
-                        let note = result as! Note
-                        if(note == selectedNote)
-                        {
-                            note.deletedDate = Date()
-                            try context.save()
-                            navigationController?.popViewController(animated: true)
-                        }
-                    }
-                }
-                catch
-                {
-                    print("Fetch Failed")
-                }
-    }
-}
+    // @IBAction func deleteNote(_ sender: Any) {
+    // let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    //   let context: NSManagedObjectContext = //appDelegate.persistentContainer.viewContext
+    
+    //let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
+    //  do {
+    //  let results:NSArray = try context.fetch(request) as NSArray
+    //     for result in results
+    //{
+    //   let note = result as! Note
+    //  if(note == selectedNote)
+    // {
+    //    note.deletedDate = Date()
+    //    try context.save()
+    //   navigationController?.popViewController(animated: true)
+    // }
+    // }
+    //  }
+    // catch
+    //  {
+    //      print("Fetch Failed")
+    //  }
+    // }
+
+    
+  
+            
+        }
+        
+        
+    
+    
 
