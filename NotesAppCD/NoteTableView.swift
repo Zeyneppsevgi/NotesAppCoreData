@@ -8,22 +8,31 @@
 import UIKit
 import CoreData
 
+private var filteredData = [Note]()
+
+
+
+
+//class ResultsVC: UIViewController {
+    
+    
+    
+  // override func viewDidLoad() {
+     //  super.viewDidLoad()
+      // view.backgroundColor = .gray
+  // }
+//}
+
+
 var noteList = [Note] ()
-
-
-
-
-class ResultsVC: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .gray
-    }
-}
-
-
-class NoteTableView: UITableViewController, UISearchResultsUpdating
+class NoteTableView: UITableViewController
 {
-    let searchController = UISearchController(searchResultsController: ResultsVC())
+    
+    
+   // let searchController = UISearchController(searchResultsController: ResultsVC())
+    
+   // var filteredData = [Note]()
+    
     
     var firstLoad = true
    
@@ -64,25 +73,25 @@ class NoteTableView: UITableViewController, UISearchResultsUpdating
                     print("Fetch Failed")
                 }
             }
-            title = "Search"
-          
-            
-            searchController.searchResultsUpdater = self
-            navigationItem.searchController = searchController
+           // title = "Search"
+          // searchController.searchResultsUpdater = self
+         //  navigationItem.searchController = searchController
          
         }
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text else {
-            return
-        }
-        let vc = searchController.searchResultsController as? ResultsVC
-        vc?.view.backgroundColor = .systemOrange
-        print(text)
+ //  func updateSearchResults(for searchController: UISearchController) {
+     //  guard let searchText = searchController.searchBar.text else {
+      //    return
+     //   }
         
+    //   filteredData = nonDeletedNotes().filter({ note -> Bool in
+      //   return note.title.lowercased().contains(searchText.lowercased())
+     //    })
         
-        
-        
-    }
+    //    tableView.reloadData()
+  // }
+
+ 
+   
   
    
     
@@ -123,13 +132,9 @@ class NoteTableView: UITableViewController, UISearchResultsUpdating
 
         if let currentImage = thisNote.image {
 
-            
-    
             let image = UIImage(data: thisNote.image ?? Data())
             noteCell.savedImage.image = image
         }
-        
-        
         
         return noteCell
     }

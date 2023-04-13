@@ -13,4 +13,6 @@ class NoteCell: UITableViewCell
     @IBOutlet weak var savedImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
         @IBOutlet weak var descLabel: UILabel!
+    
+   
 }
