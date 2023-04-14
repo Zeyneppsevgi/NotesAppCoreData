@@ -13,14 +13,18 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     
     
     
+  
+    @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var aciklamaTextView: UITextView!
     @IBOutlet weak var titleTextField: UITextField!
     
     var selectedNote: Note? = nil
+    var savedLat: Double?
+    var savedLon: Double?
     
-    let search = UISearchController(searchResultsController: nil)
+   // let search = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         
@@ -37,51 +41,72 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         let imageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(gorselSec))
         imageView.addGestureRecognizer(imageGestureRecognizer)
         
-        search.searchBar.delegate = self
-        navigationItem.searchController = search
-        
-        
-        
-    
-       
+        searchBar.delegate = self
+       // search.searchBar.delegate = self
+      //  navigationItem.searchController = search
+     
     }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
         searchBar.resignFirstResponder()
-        let text = search
-            .searchBar.text ?? "istanbul"
+        let text = searchBar.text ?? "istanbul"
+      //  let text = search.searchBar.text ?? "istanbul"
+        
         search(text: text)
+        
     }
     
     func search(text: String) {
-        let indicator = UIActivityIndicatorView()
-        indicator.style = UIActivityIndicatorView.Style.large
-        indicator.center = self.view.center
-        indicator.hidesWhenStopped = true
-        indicator.startAnimating()
-        self.view.addSubview(indicator)
-        
-        let searchRequest = MKLocalSearch.Request()
-        searchRequest.naturalLanguageQuery = text
-        
-        let activeSearch = MKLocalSearch(request: searchRequest)
-        activeSearch.start { (response, error) in
-            indicator.stopAnimating()
-            if (response == nil) {
-                print("error")
-            } else {
-                let annotations = self.mapView.annotations
-                self.mapView.removeAnnotations(annotations)
-                let lat = response?.boundingRegion.center.latitude
-                let long = response?.boundingRegion.center.longitude
-                
-                let annotation = MKPointAnnotation()
-                annotation.title = text
-                annotation.coordinate = CLLocationCoordinate2D(latitude: lat!,longitude: long!)
-                self.mapView.addAnnotation(annotation)
-            }
-            
-        }
-    }
+         
+         let indicator = UIActivityIndicatorView()
+         indicator.style = UIActivityIndicatorView.Style.large
+         indicator.center = self.view.center
+         indicator.hidesWhenStopped = true
+         indicator.startAnimating()
+         
+         self.view.addSubview(indicator)
+         
+         let searchRequest = MKLocalSearch.Request()
+         searchRequest.naturalLanguageQuery = text
+         
+         let activeSearch = MKLocalSearch(request: searchRequest)
+         
+         activeSearch.start{ (response, error) in
+             
+             indicator.stopAnimating()
+             
+             if (response == nil) {
+                 print("error")
+             }else {
+                 
+                 let annotations = self.mapView.annotations
+                 self.mapView.removeAnnotations(annotations)
+                 
+                 let lat = response?.boundingRegion.center.latitude
+                 let long = response?.boundingRegion.center.longitude
+                 
+                 let annotation = MKPointAnnotation()
+                 annotation.title = text
+                 annotation.coordinate = CLLocationCoordinate2DMake(lat!, long!)
+                 self.mapView.addAnnotation(annotation)
+                 
+                 //coredatasan çektiğim lat lonu göstermeğer daha önce kaydettiğine girerse??
+                 let cordinate = CLLocationCoordinate2DMake(lat!, long!)
+                 self.savedLat = lat
+                 self.savedLon = long
+                 
+                 let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                 let region = MKCoordinateRegion(center: cordinate, span: span)
+                 self.mapView.setRegion(region, animated: true)
+                 
+             }
+          
+         }
+         
+     }
+  
+
     
     @objc func gorselSec() {
         let picker = UIImagePickerController()
