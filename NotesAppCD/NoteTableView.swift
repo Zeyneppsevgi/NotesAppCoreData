@@ -73,22 +73,10 @@ class NoteTableView: UITableViewController
                     print("Fetch Failed")
                 }
             }
-           // title = "Search"
-          // searchController.searchResultsUpdater = self
-         //  navigationItem.searchController = searchController
+  
          
         }
- //  func updateSearchResults(for searchController: UISearchController) {
-     //  guard let searchText = searchController.searchBar.text else {
-      //    return
-     //   }
-        
-    //   filteredData = nonDeletedNotes().filter({ note -> Bool in
-      //   return note.title.lowercased().contains(searchText.lowercased())
-     //    })
-        
-    //    tableView.reloadData()
-  // }
+
 
  
    
@@ -125,8 +113,10 @@ class NoteTableView: UITableViewController
         
         let thisNote: Note!
         thisNote = nonDeletedNotes()[indexPath.row]
+        let array: [UIColor] = [#colorLiteral(red: 0.8045124412, green: 0.763776958, blue: 0.9254626632, alpha: 1), #colorLiteral(red: 0.8732218146, green: 0.7138105035, blue: 0.9272833467, alpha: 1) , #colorLiteral(red: 0.9445775151, green: 0.8938065171, blue: 0.9744563699, alpha: 1), #colorLiteral(red: 0.988660872, green: 0.8662791848, blue: 0.9515206218, alpha: 1) ]
         noteCell.titleLabel.text = thisNote.title
         noteCell.descLabel.text = thisNote.desc
+        noteCell.backgroundColor = array.randomElement()
     
         
 
