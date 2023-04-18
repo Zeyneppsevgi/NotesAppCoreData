@@ -56,11 +56,34 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
   
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude: locations[0].coordinate.longitude )
-        
-        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        let region = MKCoordinateRegion(center: location, span: span)
-        mapView.setRegion(region, animated: true)
+        if selectedNote?.latitude != nil {
+    
+            let latitude = selectedNote?.latitude
+            let longitude = selectedNote?.longitude
+    
+    
+    
+            let location = CLLocationCoordinate2D(latitude: latitude as! CLLocationDegrees, longitude: longitude as! CLLocationDegrees )
+            let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+            let region = MKCoordinateRegion(center: location, span: span)
+    
+    
+            mapView.setRegion(region, animated: true)
+    
+        } else {
+    
+            let latitude = locations[0].coordinate.latitude
+            let longitude = locations[0].coordinate.longitude
+            savedLat = Double(latitude)
+            savedLon = Double(longitude)
+            let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude )
+            let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+            let region = MKCoordinateRegion(center: location, span: span)
+    
+    
+            mapView.setRegion(region, animated: true)
+    
+        }
     }
     
     

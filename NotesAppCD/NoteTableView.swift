@@ -13,25 +13,14 @@ private var filteredData = [Note]()
 
 
 
-//class ResultsVC: UIViewController {
-    
-    
-    
-  // override func viewDidLoad() {
-     //  super.viewDidLoad()
-      // view.backgroundColor = .gray
-  // }
-//}
+
 
 
 var noteList = [Note] ()
 class NoteTableView: UITableViewController
 {
     
-    
-   // let searchController = UISearchController(searchResultsController: ResultsVC())
-    
-   // var filteredData = [Note]()
+ 
     
     
     var firstLoad = true
