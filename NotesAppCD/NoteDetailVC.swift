@@ -8,8 +8,10 @@
 import UIKit
 import CoreData
 import MapKit
+import CoreLocation
 
-class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate ,UISearchBarDelegate{
+
+class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate ,UISearchBarDelegate,MKMapViewDelegate,CLLocationManagerDelegate{
     
     
     
@@ -23,6 +25,8 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     var selectedNote: Note? = nil
     var savedLat: Double?
     var savedLon: Double?
+    var locationManager = CLLocationManager()
+   
     
    // let search = UISearchController(searchResultsController: nil)
     
@@ -44,8 +48,22 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         searchBar.delegate = self
        // search.searchBar.delegate = self
       //  navigationItem.searchController = search
-     
+        mapView.delegate = self
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+  
     }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude: locations[0].coordinate.longitude )
+        
+        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        let region = MKCoordinateRegion(center: location, span: span)
+        mapView.setRegion(region, animated: true)
+    }
+    
+    
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
