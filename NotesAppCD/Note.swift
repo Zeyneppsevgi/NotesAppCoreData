@@ -4,6 +4,7 @@
 //
 //  Created by Zeynep Sevgi on 27.03.2023.
 //
+
 import CoreData
 
 @objc(Note)

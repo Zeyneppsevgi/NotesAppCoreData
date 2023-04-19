@@ -13,21 +13,37 @@ private var filteredData = [Note]()
 
 
 
-
+//class ResultsVC: UIViewController {
+    
+    
+    
+  // override func viewDidLoad() {
+     //  super.viewDidLoad()
+      // view.backgroundColor = .gray
+  // }
+//}
 
 
 var noteList = [Note] ()
 class NoteTableView: UITableViewController
 {
     
- 
+    
+   // let searchController = UISearchController(searchResultsController: ResultsVC())
+    
+   // var filteredData = [Note]()
+    
+
+
+    
+    
     
     
     var firstLoad = true
    
         
-    func nonDeletedNotes() -> [Note]
-    {
+    func nonDeletedNotes() -> [Note]   {
+  
         var noDeleteNoteList = [Note]()
         for note in noteList
         {
@@ -40,11 +56,11 @@ class NoteTableView: UITableViewController
     }
     
         
-        override func viewDidLoad()
-        {
+    override func viewDidLoad()  {
+       
             
-            if(firstLoad)
-            {
+        if(firstLoad) {
+            
                 firstLoad = false
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext

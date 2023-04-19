@@ -15,7 +15,7 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     
     
     
-  
+    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var imageView: UIImageView!
@@ -26,9 +26,9 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     var savedLat: Double?
     var savedLon: Double?
     var locationManager = CLLocationManager()
-   
+    var stopLocation = false
     
-   // let search = UISearchController(searchResultsController: nil)
+    // let search = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         
@@ -46,32 +46,40 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         imageView.addGestureRecognizer(imageGestureRecognizer)
         
         searchBar.delegate = self
-       // search.searchBar.delegate = self
-      //  navigationItem.searchController = search
+        // search.searchBar.delegate = self
+        //  navigationItem.searchController = search
         mapView.delegate = self
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-  
+        
+    }
+    
+    
+    func mapViewDidStopLocatingUser(_ mapView: MKMapView) {
+        
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        
         if selectedNote?.latitude != nil {
-    
+            
             let latitude = selectedNote?.latitude
             let longitude = selectedNote?.longitude
-    
-    
-    
+            
+            
+            
             let location = CLLocationCoordinate2D(latitude: latitude as! CLLocationDegrees, longitude: longitude as! CLLocationDegrees )
             let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
             let region = MKCoordinateRegion(center: location, span: span)
-    
-    
+            
+            
             mapView.setRegion(region, animated: true)
-    
+            manager.stopUpdatingLocation()
+            
         } else {
-    
+
             let latitude = locations[0].coordinate.latitude
             let longitude = locations[0].coordinate.longitude
             savedLat = Double(latitude)
@@ -79,11 +87,11 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
             let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude )
             let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
             let region = MKCoordinateRegion(center: location, span: span)
-    
-    
+
             mapView.setRegion(region, animated: true)
-    
+            manager.stopUpdatingLocation()
         }
+        
     }
     
     
@@ -92,62 +100,62 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         
         searchBar.resignFirstResponder()
         let text = searchBar.text ?? "istanbul"
-      //  let text = search.searchBar.text ?? "istanbul"
+        //  let text = search.searchBar.text ?? "istanbul"
         
         search(text: text)
         
     }
     
     func search(text: String) {
-         
-         let indicator = UIActivityIndicatorView()
-         indicator.style = UIActivityIndicatorView.Style.large
-         indicator.center = self.view.center
-         indicator.hidesWhenStopped = true
-         indicator.startAnimating()
-         
-         self.view.addSubview(indicator)
-         
-         let searchRequest = MKLocalSearch.Request()
-         searchRequest.naturalLanguageQuery = text
-         
-         let activeSearch = MKLocalSearch(request: searchRequest)
-         
-         activeSearch.start{ (response, error) in
-             
-             indicator.stopAnimating()
-             
-             if (response == nil) {
-                 print("error")
-             }else {
-                 
-                 let annotations = self.mapView.annotations
-                 self.mapView.removeAnnotations(annotations)
-                 
-                 let lat = response?.boundingRegion.center.latitude
-                 let long = response?.boundingRegion.center.longitude
-                 
-                 let annotation = MKPointAnnotation()
-                 annotation.title = text
-                 annotation.coordinate = CLLocationCoordinate2DMake(lat!, long!)
-                 self.mapView.addAnnotation(annotation)
-                 
-                 //coredatasan çektiğim lat lonu göstermeğer daha önce kaydettiğine girerse??
-                 let cordinate = CLLocationCoordinate2DMake(lat!, long!)
-                 self.savedLat = lat
-                 self.savedLon = long
-                 
-                 let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                 let region = MKCoordinateRegion(center: cordinate, span: span)
-                 self.mapView.setRegion(region, animated: true)
-                 
-             }
-          
-         }
-         
-     }
-  
-
+        
+        let indicator = UIActivityIndicatorView()
+        indicator.style = UIActivityIndicatorView.Style.large
+        indicator.center = self.view.center
+        indicator.hidesWhenStopped = true
+        indicator.startAnimating()
+        
+        self.view.addSubview(indicator)
+        
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = text
+        
+        let activeSearch = MKLocalSearch(request: searchRequest)
+        
+        activeSearch.start{ (response, error) in
+            
+            indicator.stopAnimating()
+            
+            if (response == nil) {
+                print("error")
+            }else {
+                
+                let annotations = self.mapView.annotations
+                self.mapView.removeAnnotations(annotations)
+                
+                let lat = response?.boundingRegion.center.latitude
+                let long = response?.boundingRegion.center.longitude
+                
+                let annotation = MKPointAnnotation()
+                annotation.title = text
+                annotation.coordinate = CLLocationCoordinate2DMake(lat!, long!)
+                self.mapView.addAnnotation(annotation)
+                
+                //coredatasan çektiğim lat lonu göstermeğer daha önce kaydettiğine girerse??
+                let cordinate = CLLocationCoordinate2DMake(lat!, long!)
+                self.savedLat = lat
+                self.savedLon = long
+                
+                let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                let region = MKCoordinateRegion(center: cordinate, span: span)
+                self.mapView.setRegion(region, animated: true)
+                
+            }
+            
+        }
+        
+    }
+    
+    
     
     @objc func gorselSec() {
         let picker = UIImagePickerController()
@@ -169,7 +177,6 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     
     
     
-    
     @IBAction func saveAction(_ sender: Any) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext
@@ -180,25 +187,17 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
             newNote.id = noteList.count as NSNumber
             newNote.title = titleTextField.text
             newNote.desc = aciklamaTextView.text
+            newNote.latitude = savedLat as NSNumber?
+            newNote.longitude = savedLon as NSNumber?
             
-            
-            print(imageView.image)
-            
-            
-#warning("kaydetme şeklimiz  data oldugu icin önce imageyi dataya çeviriyoruz")
             
             if let image = imageView.image {
                 
                 if let imageData = image.jpegData(compressionQuality: 1.0) {
-#warning("burada çeviriyoruz dataya")
                     newNote.image = imageData
-#warning("burada coredataya ekliyoruz ")
                 }
             }
-            
-            
-            
-            
+  
             do
             {
                 try context.save()
@@ -234,39 +233,10 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         }
         
     }
-    
-    
-    
-    // @IBAction func deleteNote(_ sender: Any) {
-    // let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    //   let context: NSManagedObjectContext = //appDelegate.persistentContainer.viewContext
-    
-    //let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
-    //  do {
-    //  let results:NSArray = try context.fetch(request) as NSArray
-    //     for result in results
-    //{
-    //   let note = result as! Note
-    //  if(note == selectedNote)
-    // {
-    //    note.deletedDate = Date()
-    //    try context.save()
-    //   navigationController?.popViewController(animated: true)
-    // }
-    // }
-    //  }
-    // catch
-    //  {
-    //      print("Fetch Failed")
-    //  }
-    // }
 
-    
-  
-            
-        }
-        
-        
-    
-    
+}
+
+
+
+
 
