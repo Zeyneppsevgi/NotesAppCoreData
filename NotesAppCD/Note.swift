@@ -17,4 +17,5 @@ class Note: NSManagedObject
     @NSManaged var  image: Data?
     @NSManaged var latitude: NSNumber?
     @NSManaged var longitude: NSNumber?
+    @NSManaged var isFaved: Bool
 }

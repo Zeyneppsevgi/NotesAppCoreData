@@ -13,18 +13,21 @@ import CoreLocation
 
 class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate ,UISearchBarDelegate,MKMapViewDelegate,CLLocationManagerDelegate{
     
-    
-    
-    
+  
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var aciklamaTextView: UITextView!
     @IBOutlet weak var titleTextField: UITextField!
     
+    @IBOutlet weak var savedButonTitle: UIButton!
+    
+    @IBOutlet weak var isSaved: UIImageView!
+  
     var selectedNote: Note? = nil
     var savedLat: Double?
     var savedLon: Double?
+   // var isSaved: Bool?
     var locationManager = CLLocationManager()
     var stopLocation = false
     
@@ -33,11 +36,23 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        
         if(selectedNote != nil)
         {
+            print(selectedNote?.title)
+            if selectedNote!.isFaved {
+                isSaved.image = UIImage(systemName: "heart.fill")
+            }else {
+                isSaved.image = UIImage(systemName: "heart")
+            }
             titleTextField.text = selectedNote?.title
             aciklamaTextView.text = selectedNote?.desc
         }
+       
+        
+       
+        
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(klavyeyiKapat))
         view.addGestureRecognizer(gestureRecognizer)
         
@@ -189,7 +204,12 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
             newNote.desc = aciklamaTextView.text
             newNote.latitude = savedLat as NSNumber?
             newNote.longitude = savedLon as NSNumber?
-            
+            if isSaved.image == UIImage(systemName: "heart.fill") {
+                newNote.isFaved = false
+            } else {
+                newNote.isFaved = true
+                
+            }
             
             if let image = imageView.image {
                 
@@ -219,6 +239,13 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
                     let note = result as! Note
                     if(note == selectedNote)
                     {
+                        if isSaved.image == UIImage(systemName: "heart.fill") {
+                            note.isFaved = false
+                        } else {
+                            note.isFaved = true
+                            
+                        }
+                        
                         note.title = titleTextField.text
                         note.desc = aciklamaTextView.text
                         try context.save()
@@ -233,6 +260,9 @@ class NoteDetailVC: UIViewController,UIImagePickerControllerDelegate,UINavigatio
         }
         
     }
+    
+    
+  
 
 }
 
